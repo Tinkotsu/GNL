@@ -12,6 +12,24 @@
 
 #include "get_next_line.h"
 
+static void	ft_get_line(t_list *list, const int fd, char **line)
+{
+	char	*temp;
+	char	*new_str;
+	size_t	new_len;
+
+	while(((t_file *)list->content)->fd != fd)
+		list = list->next;
+	temp = ft_strchr(((t_file *)list->content)->str, '\n');
+	new_len = ft_strlen(((t_file *)list->content)->str) - ft_strlen(temp);
+	*line = ft_strncpy(ft_strnew(new_len + 1),\
+			    ((t_file *)list->content)->str, new_len);
+	new_str = ft_strncpy(ft_strnew(ft_strlen(temp)),\
+				temp + 1, ft_strlen(temp) - 1);
+	ft_strdel(&(((t_file *)list->content)->str));
+	((t_file *)list->content)->str = new_str;
+}
+
 static int		check_list(t_list *list, const int fd, char **line)
 {
 	if (!list)
@@ -22,7 +40,7 @@ static int		check_list(t_list *list, const int fd, char **line)
 		{
 			if (ft_strchr(((t_file *)list->content)->str, '\n'))
 			{
-				get_line(list, fd, line);
+				ft_get_line(list, fd, line);
 				return (1);
 			}
 			return (0);
@@ -42,33 +60,14 @@ static t_file	*filenew(const int fd, char *str)
 	if (!file)
 		return (NULL);
 	file->fd = fd;
-	file->str = *str;
+	file->str = str;
 	return (file);
 }
 
-void			get_line(t_list *list, const int fd, char **line)
-{
-	char	*temp;
-	char	*new_str;
-	size_t	new_len;
-
-	while(((t_file *)list->content)->fd != fd)
-		list = list->next;
-	if (!(temp = ft_strchr(((t_file *)list->content)->str, '\n')))
-		return (0);
-	new_len = ft_strlen(((t_file *)list->content)->str) - ft_strlen(temp);
-	*line = ft_strncpy(ft_strnew(new_len + 1),\
-									((t_file *)list->content)->str, new_len);
-	new_str = ft_strncpy(ft_strnew(ft_strlen(temp)),\
-									temp + 1, ft_strlen(temp) - 1);
-	ft_strdel(&(((t_file *)list->content)->str));
-	((t_file *)list->content)->str = new_str;
-}
-
-void			newlist(t_list *list, char *str, const int fd)
+static void		newlist(t_list *list, char *str, const int fd)
 {
 	t_list	*start;
-	char	*new_str;
+	char	*new_str = NULL;
 
 	start = list;
 	while (list)
@@ -82,7 +81,7 @@ void			newlist(t_list *list, char *str, const int fd)
 		}
 		list = list->next;
 	}
-	lstadd(&start, lstnew(filenew(fd, str), sizeof(t_file)));
+	ft_lstadd(&start, ft_lstnew((t_file *)(filenew(fd, str)), sizeof(t_file)));
 }
 
 int				get_next_line(const int fd, char **line)
@@ -100,7 +99,7 @@ int				get_next_line(const int fd, char **line)
 		newlist(list, buf_str, fd);
 		return (get_next_line(fd, line));
 	}
-	get_line(list, fd, line);
+	ft_get_line(list, fd, line);
 	ft_lstfree(&list);
 	return (0);
 }

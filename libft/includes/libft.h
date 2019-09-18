@@ -29,7 +29,7 @@ typedef struct		s_list
 typedef struct		s_file
 {
 	int				fd;
-	char			*str;
+	char				*str;
 }					t_file;
 
 void				ft_putchar(char c);
