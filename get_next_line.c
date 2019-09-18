@@ -25,12 +25,6 @@ static int		check_list(t_list *list, const int fd, char **line)
 				get_line(list, fd, line);
 				return (1);
 			}
-			if (ft_strchr(((t_file *)list->content)->str, '\0'))
-			{
-				get_line(list, fd, line);
-				ft_lstfree(&list);
-				return (-1);
-			}
 			return (0);
 		}
 		list = list->next;
@@ -98,11 +92,15 @@ int				get_next_line(const int fd, char **line)
 
 	if(check_list(list, fd, line) > 0)
 		return (1);
-	if (check_list(list, fd, line) < 0)
-		return (0);
 	buf_str = ft_strnew(BUFF_SIZE + 1); 
 	if (read(fd, buf_str, BUFF_SIZE) < 0)
 		return (-1);
-	newlist(list, buf_str, fd);
-	return (get_next_line(fd, line));
+	if (read(fd, buf_str, BUFF_SIZE) > 0)
+	{
+		newlist(list, buf_str, fd);
+		return (get_next_line(fd, line));
+	}
+	get_line(list, fd, line);
+	ft_lstfree(&list);
+	return (0);
 }
