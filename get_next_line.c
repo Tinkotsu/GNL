@@ -26,7 +26,11 @@ static int		check_list(t_list *list, const int fd, char **line)
 				return (1);
 			}
 			if (ft_strchr(((t_file *)list->content)->str, '\0'))
+			{
+				get_line(list, fd, line);
+				ft_lstfree(&list);
 				return (-1);
+			}
 			return (0);
 		}
 		list = list->next;
