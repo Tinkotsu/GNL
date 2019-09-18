@@ -59,7 +59,8 @@ void			get_line(t_list *list, const int fd, char **line)
 	if (!(temp = ft_strchr(((t_file *)list->content)->str, '\n')))
 		return (0);
 	new_len = ft_strlen(((t_file *)list->content)->str) - ft_strlen(temp);
-	*line = ft_strncpy(ft_strnew(new_len + 1), ((t_file *)list->content)->str, new_len);
+	*line = ft_strncpy(ft_strnew(new_len + 1),\
+									((t_file *)list->content)->str, new_len);
 	new_str = ft_strncpy(ft_strnew(ft_strlen(temp)),\
 									temp + 1, ft_strlen(temp) - 1);
 	ft_strdel(&(((t_file *)list->content)->str));
