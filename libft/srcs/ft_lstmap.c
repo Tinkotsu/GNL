@@ -6,7 +6,7 @@
 /*   By: ifran <ifran@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/12 19:01:17 by ifran             #+#    #+#             */
-/*   Updated: 2019/09/18 17:28:25 by ifran            ###   ########.fr       */
+/*   Updated: 2019/09/19 14:57:57 by ifran            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ t_list		*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem))
 			ft_lstfree(&new_list);
 			return (NULL);
 		}
-		ft_lstadd(&new_list, tmp);
+		ft_lstpushback(new_list, tmp);
 		lst = lst->next;
 	}
 	return (new_list);

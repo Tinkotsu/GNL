@@ -6,7 +6,7 @@
 /*   By: ifran <ifran@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/05 17:43:52 by ifran             #+#    #+#             */
-/*   Updated: 2019/09/18 18:59:15 by ifran            ###   ########.fr       */
+/*   Updated: 2019/09/19 15:01:53 by ifran            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct		s_list
 typedef struct		s_file
 {
 	int				fd;
-	char				*str;
+	char			*str;
 }					t_file;
 
 void				ft_putchar(char c);
