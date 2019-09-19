@@ -6,12 +6,11 @@
 /*   By: ifran <ifran@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/17 18:11:36 by ifran             #+#    #+#             */
-/*   Updated: 2019/09/19 19:27:26 by ifran            ###   ########.fr       */
+/*   Updated: 2019/09/20 02:27:26 by ifran            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
 static void		ft_get_line(t_list *list, const int fd, char **line)
 {
@@ -57,8 +56,6 @@ static t_file	*filenew(const int fd, char *str)
 {
 	t_file	*file;
 
-	if (!str || !fd)
-		return (NULL);
 	file = (t_file *)malloc(sizeof(t_file));
 	if (!file)
 		return (NULL);
@@ -81,6 +78,7 @@ static void		newlist(t_list **list, char *str, const int fd)
 			new_str = ft_strjoin((((t_file *)start->content)->str), str);
 			ft_strdel(&(((t_file *)start->content)->str));
 			((t_file *)start->content)->str = new_str;
+			ft_strdel(&str);
 			return ;
 		}
 		start = start->next;
@@ -99,12 +97,16 @@ int				get_next_line(const int fd, char **line)
 	buf_str = ft_strnew(BUFF_SIZE + 1);
 	if ((c = read(fd, buf_str, BUFF_SIZE)) < 0)
 		return (-1);
-	if (c > 0)
+	if (*buf_str && c)
 	{
 		newlist(&list, buf_str, fd);
 		return (get_next_line(fd, line));
 	}
-	ft_get_line(list, fd, line);
-	ft_lstfree(&list);
+	if (list && *(((t_file *)list->content)->str))
+	{
+		ft_get_line(list, fd, line);
+		ft_lstfree(&list);
+		return (1);
+	}
 	return (0);
 }
