@@ -6,7 +6,7 @@
 /*   By: ifran <ifran@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/05 17:43:52 by ifran             #+#    #+#             */
-/*   Updated: 2019/09/19 15:01:53 by ifran            ###   ########.fr       */
+/*   Updated: 2019/09/19 17:15:24 by ifran            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <string.h>
-# include <fcntl.h>
 
 typedef struct		s_list
 {
