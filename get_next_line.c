@@ -6,26 +6,29 @@
 /*   By: ifran <ifran@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/17 18:11:36 by ifran             #+#    #+#             */
-/*   Updated: 2019/09/19 16:42:08 by ifran            ###   ########.fr       */
+/*   Updated: 2019/09/19 19:27:26 by ifran            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
-static void	ft_get_line(t_list *list, const int fd, char **line)
+static void		ft_get_line(t_list *list, const int fd, char **line)
 {
 	char	*temp;
 	char	*new_str;
 	size_t	new_len;
+	size_t	temp_len;
 
-	while(((t_file *)list->content)->fd != fd)
+	while (((t_file *)list->content)->fd != fd)
 		list = list->next;
 	temp = ft_strchr(((t_file *)list->content)->str, '\n');
-	new_len = ft_strlen(((t_file *)list->content)->str) - ft_strlen(temp);
+	temp_len = ((temp) ? (ft_strlen(temp)) : (0));
+	new_len = ft_strlen(((t_file *)list->content)->str) - temp_len;
 	*line = ft_strncpy(ft_strnew(new_len + 1),\
-			    ((t_file *)list->content)->str, new_len);
-	new_str = ft_strncpy(ft_strnew(ft_strlen(temp)),\
-				temp + 1, ft_strlen(temp) - 1);
+			((t_file *)list->content)->str, new_len);
+	new_str = (temp ? (ft_strncpy(ft_strnew(temp_len),\
+				temp + 1, temp_len - 1)) : NULL);
 	ft_strdel(&(((t_file *)list->content)->str));
 	((t_file *)list->content)->str = new_str;
 }
@@ -64,39 +67,41 @@ static t_file	*filenew(const int fd, char *str)
 	return (file);
 }
 
-static void		newlist(t_list *list, char *str, const int fd)
+static void		newlist(t_list **list, char *str, const int fd)
 {
 	t_list	*start;
-	char	*new_str = NULL;
+	char	*new_str;
 
-	start = list;
-	while (list)
+	new_str = NULL;
+	start = *list;
+	while (start)
 	{
-		if (((t_file *)list->content)->fd == fd)
+		if (((t_file *)start->content)->fd == fd)
 		{
-			new_str = ft_strjoin((((t_file *)list->content)->str), str);
-			ft_strdel(&(((t_file *)list->content)->str));
-			((t_file *)list->content)->str = new_str;
+			new_str = ft_strjoin((((t_file *)start->content)->str), str);
+			ft_strdel(&(((t_file *)start->content)->str));
+			((t_file *)start->content)->str = new_str;
 			return ;
 		}
-		list = list->next;
+		start = start->next;
 	}
-	ft_lstadd(&start, ft_lstnew((t_file *)(filenew(fd, str)), sizeof(t_file)));
+	ft_lstadd(list, ft_lstnew((t_file *)(filenew(fd, str)), sizeof(t_file)));
 }
 
 int				get_next_line(const int fd, char **line)
 {
 	static t_list	*list = NULL;
 	char			*buf_str;
+	int				c;
 
-	if(check_list(list, fd, line) > 0)
+	if (check_list(list, fd, line) > 0)
 		return (1);
-	buf_str = ft_strnew(BUFF_SIZE + 1); 
-	if (read(fd, buf_str, BUFF_SIZE) < 0)
+	buf_str = ft_strnew(BUFF_SIZE + 1);
+	if ((c = read(fd, buf_str, BUFF_SIZE)) < 0)
 		return (-1);
-	if (read(fd, buf_str, BUFF_SIZE) > 0)
+	if (c > 0)
 	{
-		newlist(list, buf_str, fd);
+		newlist(&list, buf_str, fd);
 		return (get_next_line(fd, line));
 	}
 	ft_get_line(list, fd, line);
