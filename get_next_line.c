@@ -56,6 +56,8 @@ static t_file	*filenew(const int fd, char *str)
 {
 	t_file	*file;
 
+	if (!str)
+		return (NULL);
 	file = (t_file *)malloc(sizeof(t_file));
 	if (!file)
 		return (NULL);
@@ -105,8 +107,9 @@ int				get_next_line(const int fd, char **line)
 	if (list && *(((t_file *)list->content)->str))
 	{
 		ft_get_line(list, fd, line);
-		ft_lstfree(&list);
+		free((((t_file *)list->content)->str));
 		return (1);
 	}
+	free(buf_str);
 	return (0);
 }
