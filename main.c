@@ -7,7 +7,7 @@ int main()
 	char *str;
 	int fd;
 
-	fd = open("gnl7_3.txt", O_RDONLY);
+	fd = open("get_next_line.c", O_RDONLY);
 	while (get_next_line(fd, &str))
 		printf("%s", str);
 	return (0);
