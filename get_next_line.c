@@ -38,7 +38,6 @@ static int		get_buff(t_list *list, char *buff)
 		((t_file *)list->content)->str = ft_strdup(buff);
 	if (ft_strchr(((t_file *)list->content)->str, '\n'))
 		res = 1;
-	ft_strdel(&buff);
 	return (res);
 }
 
@@ -54,14 +53,13 @@ static int		push_line(t_list *list, char **line)
 	{
 		*line = ft_strsub(str, 0, ft_strlen(str) - ft_strlen(temp));
 		((t_file *)list->content)->str = ft_strdup(temp);
-		ft_strdel(&str);
 	}
 	else
 	{
 		*line = ft_strdup(str);
-		ft_strdel(&str);
 		((t_file *)list->content)->str = NULL;
 	}
+	ft_strdel(&str);
 	return (1);
 }
 
@@ -79,6 +77,7 @@ int				get_next_line(const int fd, char **line)
 	while ((c = read(fd, buff, BUFF_SIZE)) > 0)
 		if (get_buff(curr, buff))
 			break ;
+	ft_strdel(&buff);
 	if (c < 0)
 		return (-1);
 	if (push_line(curr, line))
