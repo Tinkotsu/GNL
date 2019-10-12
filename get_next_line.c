@@ -36,7 +36,7 @@ static int		get_buff(t_list *list, char *buff)
 	}
 	else
 		((t_file *)list->content)->str = ft_strdup(buff);
-	if (ft_strchr(buff, '\n'))
+	if (ft_strchr(((t_file *)list->content)->str, '\n'))
 		res = 1;
 	ft_strdel(&buff);
 	return (res);
@@ -52,7 +52,7 @@ static int		push_line(t_list *list, char **line)
 		return (0);
 	if ((temp = ft_strchr(str, '\n')) && *(++temp))
 	{
-		*line = ft_strncpy(*line, str, ft_strlen(str) - ft_strlen(temp));
+		*line = ft_strsub(str, 0, ft_strlen(str) - ft_strlen(temp));
 		((t_file *)list->content)->str = ft_strdup(temp);
 	}
 	else
