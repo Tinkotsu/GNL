@@ -22,7 +22,7 @@ static	t_list	*s_check_and_create(t_list **list, int fd)
 	return (*list);
 }
 
-static int		get_buff(t_list *list, char *buff)
+static int		get_buff(t_list *list, char **buff)
 {
 	char	*temp;
 	int		res;
@@ -31,13 +31,14 @@ static int		get_buff(t_list *list, char *buff)
 	temp = ((t_file *)list->content)->str;
 	if (temp)
 	{
-		((t_file *)list->content)->str = ft_strjoin(temp, buff);
+		((t_file *)list->content)->str = ft_strjoin(temp, *buff);
 		ft_strdel(&temp);
 	}
 	else
-		((t_file *)list->content)->str = ft_strdup(buff);
+		((t_file *)list->content)->str = ft_strdup(*buff);
 	if (ft_strchr(((t_file *)list->content)->str, '\n'))
 		res = 1;
+	ft_strclr(*buff);
 	return (res);
 }
 
@@ -75,7 +76,7 @@ int				get_next_line(const int fd, char **line)
 	if (!(curr = s_check_and_create(&list, fd)))
 		return (-1);
 	while ((c = read(fd, buff, BUFF_SIZE)) > 0)
-		if (get_buff(curr, buff))
+		if (get_buff(curr, &buff))
 			break ;
 	ft_strdel(&buff);
 	if (c < 0)
