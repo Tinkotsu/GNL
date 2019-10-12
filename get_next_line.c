@@ -54,10 +54,14 @@ static int		push_line(t_list *list, char **line)
 	{
 		*line = ft_strsub(str, 0, ft_strlen(str) - ft_strlen(temp));
 		((t_file *)list->content)->str = ft_strdup(temp);
+		ft_strdel(&str);
 	}
 	else
+	{
 		*line = ft_strdup(str);
-	ft_strdel(&str);
+		ft_strdel(&str);
+		((t_file *)list->content)->str = NULL;
+	}
 	return (1);
 }
 

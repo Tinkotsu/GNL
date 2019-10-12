@@ -7,7 +7,7 @@ int main()
 	char *str;
 	int fd;
 
-	fd = open("get_next_line.h", O_RDONLY);
+	fd = open("author", O_RDONLY);
 	while (get_next_line(fd, &str))
 		printf("%s", str);
 	return (0);
