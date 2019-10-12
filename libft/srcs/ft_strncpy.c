@@ -1,34 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_strncpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ifran <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/09/06 01:31:43 by ifran             #+#    #+#             */
-/*   Updated: 2019/09/11 14:22:12 by ifran            ###   ########.fr       */
+/*   Created: 2019/09/06 02:51:57 by ifran             #+#    #+#             */
+/*   Updated: 2019/09/10 12:29:06 by ifran            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char			*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strncpy(char *dst, const char *src, size_t len)
 {
-	char			*arr;
-	char			*start;
-	unsigned int	full_len;
+	char *start;
 
-	if (!s1 || !s2)
-		return (NULL);
-	full_len = ft_strlen(s1) + ft_strlen(s2);
-	arr = (char *)malloc(sizeof(char) * (full_len + 1));
-	if (!arr)
-		return (NULL);
-	start = arr;
-	while (*s1)
-		*arr++ = *s1++;
-	while (*s2)
-		*arr++ = *s2++;
-	*arr = '\0';
+	start = dst;
+	while (*src && len)
+	{
+		*dst++ = *src++;
+		--len;
+	}
+	while (len)
+	{
+		*dst = '\0';
+		++dst;
+		--len;
+	}
 	return (start);
 }

@@ -1,115 +1,83 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ifran <ifran@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/09/17 18:11:36 by ifran             #+#    #+#             */
-/*   Updated: 2019/09/20 02:27:26 by ifran            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+/* HEADER */
 
 #include "get_next_line.h"
 
-static void		ft_get_line(t_list *list, const int fd, char **line)
-{
-	char	*temp;
-	char	*new_str;
-	size_t	new_len;
-	size_t	temp_len;
-
-	while (((t_file *)list->content)->fd != fd)
-		list = list->next;
-	temp = ft_strchr(((t_file *)list->content)->str, '\n');
-	temp_len = ((temp) ? (ft_strlen(temp)) : (0));
-	new_len = ft_strlen(((t_file *)list->content)->str) - temp_len;
-	*line = ft_strncpy(ft_strnew(new_len + 1),\
-			((t_file *)list->content)->str, new_len);
-	new_str = (temp ? (ft_strncpy(ft_strnew(temp_len),\
-				temp + 1, temp_len - 1)) : NULL);
-	ft_strdel(&(((t_file *)list->content)->str));
-	((t_file *)list->content)->str = new_str;
-}
-
-static int		check_list(t_list *list, const int fd, char **line)
-{
-	if (!list)
-		return (0);
-	while (list)
-	{
-		if (((t_file *)list->content)->fd == fd)
-		{
-			if (ft_strchr(((t_file *)list->content)->str, '\n'))
-			{
-				ft_get_line(list, fd, line);
-				return (1);
-			}
-			return (0);
-		}
-		list = list->next;
-	}
-	return (0);
-}
-
-static t_file	*filenew(const int fd, char *str)
+static	t_list	*s_check_and_create(t_list **list, int fd)
 {
 	t_file	*file;
+	t_list	*temp;
 
-	if (!str)
+	temp = *list;
+	while (temp)
+	{
+		if (((t_file *)temp->content)->fd == fd)
+			return (temp);
+		temp = temp->next;
+	}
+	if (!(file = (t_file *)malloc(sizeof(t_file))))
 		return (NULL);
-	file = (t_file *)malloc(sizeof(t_file));
-	if (!file)
-		return (NULL);
+	file->str = NULL;
 	file->fd = fd;
-	file->str = str;
-	return (file);
+	ft_lstadd(list, ft_lstnew(file, sizeof(t_file)));
+	return (*list);
 }
 
-static void		newlist(t_list **list, char *str, const int fd)
+static int		get_buff(t_list *list, char *buff)
 {
-	t_list	*start;
-	char	*new_str;
+	char	*temp;
+	int		res;
 
-	new_str = NULL;
-	start = *list;
-	while (start)
+	res = 0;
+	temp = ((t_file *)list->content)->str;
+	if (temp)
 	{
-		if (((t_file *)start->content)->fd == fd)
-		{
-			new_str = ft_strjoin((((t_file *)start->content)->str), str);
-			ft_strdel(&(((t_file *)start->content)->str));
-			((t_file *)start->content)->str = new_str;
-			ft_strdel(&str);
-			return ;
-		}
-		start = start->next;
+		((t_file *)list->content)->str = ft_strjoin(temp, buff);
+		ft_strdel(&temp);
 	}
-	ft_lstadd(list, ft_lstnew((t_file *)(filenew(fd, str)), sizeof(t_file)));
+	else
+		((t_file *)list->content)->str = ft_strdup(buff);
+	if (ft_strchr(buff, '\n'))
+		res = 1;
+	ft_strdel(&buff);
+	return (res);
+}
+
+static int		push_line(t_list *list, char **line)
+{
+	char	*temp;
+	char	*str;
+
+	str = ((t_file *)list->content)->str;
+	if (!str)
+		return (0);
+	if ((temp = ft_strchr(str, '\n')) && *(++temp))
+	{
+		*line = ft_strncpy(*line, str, ft_strlen(str) - ft_strlen(temp));
+		((t_file *)list->content)->str = ft_strdup(temp);
+	}
+	else
+		*line = ft_strdup(str);
+	ft_strdel(&str);
+	return (1);
 }
 
 int				get_next_line(const int fd, char **line)
 {
-	static t_list	*list = NULL;
-	char			*buf_str;
 	int				c;
+	char			*buff;
+	static	t_list	*list;
+	t_list			*curr;
 
-	if (check_list(list, fd, line) > 0)
-		return (1);
-	buf_str = ft_strnew(BUFF_SIZE + 1);
-	if ((c = read(fd, buf_str, BUFF_SIZE)) < 0)
+	*line = NULL;
+	buff = ft_strnew(BUFF_SIZE);
+	if (!(curr = s_check_and_create(&list, fd)))
 		return (-1);
-	if (*buf_str && c)
-	{
-		newlist(&list, buf_str, fd);
-		return (get_next_line(fd, line));
-	}
-	if (list && *(((t_file *)list->content)->str))
-	{
-		ft_get_line(list, fd, line);
-		free((((t_file *)list->content)->str));
+	while ((c = read(fd, buff, BUFF_SIZE)) > 0)
+		if (get_buff(curr, buff))
+			break ;
+	if (c < 0)
+		return (-1);
+	if (push_line(curr, line))
 		return (1);
-	}
-	free(buf_str);
 	return (0);
 }

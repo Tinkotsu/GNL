@@ -1,34 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ifran <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/09/06 01:31:43 by ifran             #+#    #+#             */
-/*   Updated: 2019/09/11 14:22:12 by ifran            ###   ########.fr       */
+/*   Created: 2019/09/09 17:46:01 by ifran             #+#    #+#             */
+/*   Updated: 2019/09/11 18:46:11 by ifran            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char			*ft_strjoin(char const *s1, char const *s2)
+void	*ft_memmove(void *dst, const void *src, size_t len)
 {
-	char			*arr;
-	char			*start;
-	unsigned int	full_len;
+	char *cdst;
+	char *csrc;
 
-	if (!s1 || !s2)
+	csrc = (char *)src;
+	cdst = (char *)dst;
+	if (csrc == '\0' && cdst == '\0')
 		return (NULL);
-	full_len = ft_strlen(s1) + ft_strlen(s2);
-	arr = (char *)malloc(sizeof(char) * (full_len + 1));
-	if (!arr)
-		return (NULL);
-	start = arr;
-	while (*s1)
-		*arr++ = *s1++;
-	while (*s2)
-		*arr++ = *s2++;
-	*arr = '\0';
-	return (start);
+	if (csrc >= cdst)
+	{
+		while (len--)
+			*cdst++ = *csrc++;
+	}
+	else
+	{
+		while (len > 0)
+		{
+			--len;
+			cdst[len] = csrc[len];
+		}
+	}
+	return (dst);
 }

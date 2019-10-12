@@ -1,34 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_putnbr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ifran <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/09/06 01:31:43 by ifran             #+#    #+#             */
-/*   Updated: 2019/09/11 14:22:12 by ifran            ###   ########.fr       */
+/*   Created: 2019/09/06 00:04:41 by ifran             #+#    #+#             */
+/*   Updated: 2019/09/10 18:05:07 by ifran            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char			*ft_strjoin(char const *s1, char const *s2)
+static int		check(int n)
 {
-	char			*arr;
-	char			*start;
-	unsigned int	full_len;
+	if (n < 0)
+	{
+		ft_putchar('-');
+		n *= -1;
+	}
+	if (n == 0)
+		ft_putchar('0');
+	return (n);
+}
 
-	if (!s1 || !s2)
-		return (NULL);
-	full_len = ft_strlen(s1) + ft_strlen(s2);
-	arr = (char *)malloc(sizeof(char) * (full_len + 1));
-	if (!arr)
-		return (NULL);
-	start = arr;
-	while (*s1)
-		*arr++ = *s1++;
-	while (*s2)
-		*arr++ = *s2++;
-	*arr = '\0';
-	return (start);
+void			ft_putnbr(int n)
+{
+	int		i;
+	char	arr[11];
+
+	if (n == -2147483648)
+	{
+		ft_putnbr(n / 10);
+		ft_putchar('8');
+		return ;
+	}
+	i = -1;
+	n = check(n);
+	while (n > 0)
+	{
+		arr[++i] = '0' + (n % 10);
+		n /= 10;
+	}
+	while (i >= 0)
+		ft_putchar(arr[i--]);
 }

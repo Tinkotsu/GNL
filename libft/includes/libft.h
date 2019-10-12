@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ifran <ifran@student.42.fr>                +#+  +:+       +#+        */
+/*   By: tinkotsu <tinkotsu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/05 17:43:52 by ifran             #+#    #+#             */
-/*   Updated: 2019/09/19 17:15:24 by ifran            ###   ########.fr       */
+/*   Updated: 2019/10/12 09:08:27 by tinkotsu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,6 @@ typedef struct		s_list
 	size_t			content_size;
 	struct s_list	*next;
 }					t_list;
-
-typedef struct		s_file
-{
-	int				fd;
-	char			*str;
-}					t_file;
 
 void				ft_putchar(char c);
 int					ft_atoi(const char *str);
@@ -97,7 +91,7 @@ void				ft_lstiter(t_list *lst, void (*f)(t_list *elem));
 t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 char				**ft_sort_params(int argc, char **argv);
 int					ft_sqrt(int nb);
-void				ft_lstpushback(t_list *lst, t_list *new_list);
+t_list				*ft_lstpushback(t_list *lst, t_list *new_list);
 void				ft_lstfree(t_list **lst);
 
 #endif

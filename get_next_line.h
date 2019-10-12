@@ -1,21 +1,17 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ifran <ifran@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/09/17 18:06:02 by ifran             #+#    #+#             */
-/*   Updated: 2019/09/20 02:35:13 by ifran            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+/* HEADER */
 
 #ifndef GET_NEXT_LINE_H
 
 # define GET_NEXT_LINE_H
-# define BUFF_SIZE 1000
+# define BUFF_SIZE 32
 
 # include "libft.h"
+
+typedef struct 		s_file
+{
+	int 			fd;
+	char 			*str;
+}					t_file;
 
 int					get_next_line(const int fd, char **line);
 
