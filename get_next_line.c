@@ -6,7 +6,7 @@
 /*   By: tinkotsu <tinkotsu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 16:22:38 by ifran             #+#    #+#             */
-/*   Updated: 2019/10/13 23:36:21 by tinkotsu         ###   ########.fr       */
+/*   Updated: 2019/10/13 23:50:31 by tinkotsu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static	t_list	    *s_check_and_create(t_list **list, int fd)
 {
     t_file	*file;
     t_list	*temp;
+	t_list	*new;
 
     if (fd < 0)
 		return (NULL);
@@ -26,11 +27,11 @@ static	t_list	    *s_check_and_create(t_list **list, int fd)
 		    return (temp);
 		temp = temp->next;
     }
-    if (!(file = (t_file *)malloc(sizeof(t_file))))
+	if (!(new = ft_lstnew(file, sizeof(t_file))))
 		return (NULL);
-    file->str = NULL;
-    file->fd = fd;
-    ft_lstadd(list, ft_lstnew(file, sizeof(t_file)));
+	((t_file *)new->content)->str = NULL;
+    ((t_file *)new->content)->fd = fd;
+    ft_lstadd(list, new);
     return (*list);
 }
 
