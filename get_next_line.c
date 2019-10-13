@@ -7,6 +7,8 @@ static	t_list	*s_check_and_create(t_list **list, int fd)
 	t_file	*file;
 	t_list	*temp;
 
+	if (fd < 0)
+		return (NULL);
 	temp = *list;
 	while (temp)
 	{
@@ -47,8 +49,7 @@ static int		push_line(t_list *list, char **line)
 	char	*temp;
 	char	*str;
 
-	str = ((t_file *)list->content)->str;
-	if (!str)
+	if (!(str = ((t_file *)list->content)->str))
 		return (0);
 	if ((temp = ft_strchr(str, '\n')))
 	{
@@ -74,8 +75,6 @@ int				get_next_line(const int fd, char **line)
 	static	t_list	*list;
 	t_list			*curr;
 
-	if (fd < 0)
-		return (-1);
 	*line = NULL;
 	buff = ft_strnew(BUFF_SIZE);
 	if (!(curr = s_check_and_create(&list, fd)))
