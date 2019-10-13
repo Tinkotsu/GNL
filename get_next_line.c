@@ -84,6 +84,8 @@ int		    get_next_line(const int fd, char **line)
     static  t_list  *list;
     t_list	    *curr;
 
+    if (line)
+	*line = NULL;
     buff = ft_strnew(BUFF_SIZE);
     if (!(curr = s_check_and_create(&list, fd)))
 		return (-1);
