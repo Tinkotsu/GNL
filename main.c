@@ -9,6 +9,6 @@ int main()
 
 	fd = open("get_next_line.c", O_RDONLY);
 	while (get_next_line(fd, &str))
-		printf("%s", str);
+		printf("%s\n", str);
 	return (0);
 }

@@ -50,10 +50,13 @@ static int		push_line(t_list *list, char **line)
 	str = ((t_file *)list->content)->str;
 	if (!str)
 		return (0);
-	if ((temp = ft_strchr(str, '\n')) && *(++temp))
+	if ((temp = ft_strchr(str, '\n')))
 	{
 		*line = ft_strsub(str, 0, ft_strlen(str) - ft_strlen(temp));
-		((t_file *)list->content)->str = ft_strdup(temp);
+		if (*(++temp))
+			((t_file *)list->content)->str = ft_strdup(temp);
+		else
+			((t_file *)list->content)->str = NULL;
 	}
 	else
 	{
@@ -71,6 +74,8 @@ int				get_next_line(const int fd, char **line)
 	static	t_list	*list;
 	t_list			*curr;
 
+	if (fd < 0)
+		return (-1);
 	*line = NULL;
 	buff = ft_strnew(BUFF_SIZE);
 	if (!(curr = s_check_and_create(&list, fd)))
