@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ifran <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: ifran <ifran@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/14 14:50:49 by ifran             #+#    #+#             */
-/*   Updated: 2019/10/14 15:26:22 by ifran            ###   ########.fr       */
+/*   Updated: 2019/11/11 15:59:25 by ifran            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,15 @@ static int		get_buff(t_list *list, char **buff)
 	temp = ((t_file *)list->content)->str;
 	if (temp)
 	{
-		((t_file *)list->content)->str = ft_strjoin(temp, *buff);
+		if (!(((t_file *)list->content)->str = ft_strjoin(temp, *buff)))
+			return (-1);
 		ft_strdel(&temp);
 	}
 	else
-		((t_file *)list->content)->str = ft_strdup(*buff);
+	{
+		if (!(((t_file *)list->content)->str = ft_strdup(*buff)))
+			return (-1);
+	}
 	if (ft_strchr(((t_file *)list->content)->str, '\n'))
 		res = 1;
 	ft_strclr(*buff);
@@ -63,12 +67,19 @@ static int		push_line(t_list *list, char **line)
 	if (!(str = ((t_file *)list->content)->str))
 		return (0);
 	if (!(temp = ft_strchr(str, '\n')))
-		*line = ft_strdup(str);
+	{
+		if (!(*line = ft_strdup(str)))
+			return (-1);
+	}
 	else
 	{
-		*line = ft_strsub(str, 0, ft_strlen(str) - ft_strlen(temp));
+		if (!(*line = ft_strsub(str, 0, ft_strlen(str) - ft_strlen(temp))))
+			return (-1);
 		if (*(++temp))
-			temp = ft_strdup(temp);
+		{
+			if (!(temp = ft_strdup(temp)))
+				return (-1);
+		}
 		else
 			temp = NULL;
 	}
@@ -80,6 +91,7 @@ static int		push_line(t_list *list, char **line)
 int				get_next_line(const int fd, char **line)
 {
 	int				c;
+	int				e;
 	char			*buff;
 	static t_list	*list;
 	t_list			*curr;
@@ -90,12 +102,16 @@ int				get_next_line(const int fd, char **line)
 	if (!(curr = s_check_and_create(&list, fd)))
 		return (-1);
 	while ((c = read(fd, buff, BUFF_SIZE)) > 0)
-		if (get_buff(curr, &buff))
+		if ((e = get_buff(curr, &buff)))
 			break ;
 	ft_strdel(&buff);
-	if (c < 0)
+	if (c < 0 || e < 0)
 		return (-1);
-	if (push_line(curr, line))
+	if ((e = push_line(curr, line)))
+	{
+		if (e < 0)
+			return (-1);
 		return (1);
+	}
 	return (0);
 }
